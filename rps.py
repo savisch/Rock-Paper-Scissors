@@ -22,26 +22,6 @@ class Player:
         self.their_move = their_move
         self.remember = self.their_move
 
-    def score(self, my_move, their_move):
-        global player1_score, player2_score
-        self.my_move = my_move
-        self.their_move = their_move
-
-        if self.my_move == self.their_move:
-            print("It is a tie, no score")
-            pause()
-        elif beats(self.my_move, self.their_move):
-            print("Player one wins")
-            pause()
-            player1_score += 1
-        else:
-            print("Player two wins")
-            pause()
-            player2_score += 1
-
-        print(f"Player One: {player1_score}  Player Two: {player2_score}\n")
-        pause()
-
 # a subclass called RandomPlayer that chooses moves
 # at Random from 'moves'([rock, paper, scissors])
 class RandomPlayer(Player):
@@ -51,11 +31,22 @@ class RandomPlayer(Player):
 # a subclass for a human player that takes input from a 
 # human and validates input as 'rock', 'paper', 'scissors
 class HumanPlayer(Player):
-    def move(self):
-        response = input("Enter 'rock', 'paper' or 'scissors': ").lower()
+    name_response = input("What is your name?\n") 
+    """def get_name(self):
+        self.response = input("What is your name?\n")
         pause()
-        if response in moves:
-             return response
+        return self.response"""
+       
+    def learn_name(self):
+        self.name = self.name_response
+        return self.name
+
+    def move(self):
+        self.move_response = input("Enter 'rock', 'paper' or 'scissors': ").lower()
+        pause()
+
+        if self.move_response in moves:
+             return self.move_response
         else:
             self.move()
 
@@ -93,12 +84,34 @@ class Game:
         global count
         move1 = self.p1.move()
         move2 = self.p2.move()
-        print(f"Player 1: {move1}  Player 2: {move2}\n")
+        name = self.p1.name
+        print(f"{name}: {move1}  Phly Killa': {move2}\n")
         pause()
         self.p1.learn(move1, move2)
         self.p2.learn(move2, move1)
         count += 1
-        self.p1.score(move1, move2)
+        self.score(move1, move2)
+        pause()
+
+    def score(self, my_move, their_move):
+        global player1_score, player2_score
+        self.my_move = my_move
+        self.their_move = their_move
+        self.name = self.p1.learn_name()
+
+        if self.my_move == self.their_move:
+            print("It is a tie, no score")
+            pause()
+        elif beats(self.my_move, self.their_move):
+            print(f"{self.name} wins")
+            pause()
+            player1_score += 1
+        else:
+            print("Phly Killa' wins")
+            pause()
+            player2_score += 1
+
+        print(f"{self.name}: {player1_score}  Phly Killa': {player2_score}\n")
         pause()
 
     def win(self, total1, total2):
@@ -106,16 +119,20 @@ class Game:
         self.total2 = total2
 
         if self.total1 > self.total2:
-            print("Player One Wins!\n")
+            winner = self.p1.learn_name()
+            print(f"{winner} Wins!\n")
             pause()
         elif self.total1 < self.total2:
-            print("Player Two Wins!\n")
+            print("Phly Killa' Wins!\n")
             pause()
         else:
             print("It is a tie, no one wins...")
 
     def play_game(self):
-        print("Game start!\n")
+        name = self.p1.learn_name()
+        print(f"\nHello {name}!\n")
+        pause()
+        print("Let's start the Game!\n")
         pause()
         for round in range(3):
             print(f"Round {round}:")
@@ -123,7 +140,7 @@ class Game:
             self.play_round()
         self.win(player1_score, player2_score)
         print("Game over!")
-
+        pause()
 
 if __name__ == '__main__':
     # game play will utilize a HumanPlayer for input and randomly
