@@ -154,7 +154,7 @@ class Game:
 if __name__ == '__main__':
     # game play will utilize a HumanPlayer for input and randomly
     # pick an opponent from the list of opponents
-    #opponents = [RandomPlayer(), ReflectPlayer(), CyclePlayer(), Player()]
+    opponents = [RandomPlayer(), ReflectPlayer(), CyclePlayer(), Player()]
     game = Game(HumanPlayer(), random.choice(opponents))
     #game = Game(HumanPlayer(), Player())
     game.play_game()
