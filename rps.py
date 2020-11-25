@@ -76,6 +76,12 @@ class CyclePlayer(Player):
         play = moves[self.cycle_count]
         self.cycle_count += 1
         return play
+"""Could also do:
+    def move(self):
+        play = moves[self.cycle._count % 3]
+        self.cycle_count += 1
+with %3 you can skip the if statement and reset to 0 since 0%3=0 / 1%3=1 / 
+2%3=2 / 3%3=0 / 4%3=1 / 5%3=2 / 6%3=0 / etc..."""
 
 
 def beats(one, two):
