@@ -87,8 +87,8 @@ class Game:
 
     def rounds_query(self):
         try:
-            self.round_response = int(input("How many rounds would you like to \
-                play?\n"))
+            self.round_response = int(input("How many rounds would you like \
+                to play?\n"))
             return self.round_response
         except ValueError:
             self.rounds_query()
