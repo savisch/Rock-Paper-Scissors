@@ -7,10 +7,6 @@ import time
 
 
 moves = ['rock', 'paper', 'scissors']
-cycleMoves = ['rock', 'paper', 'scissors']
-count = 0
-player1_score = 0
-player2_score = 0
 
 
 def pause():
@@ -18,6 +14,10 @@ def pause():
 
 
 class Player:
+    def __init__(self):
+        self.cycle_count = 0
+        self.count = 0
+
     def move(self):
         return 'rock'
 
@@ -43,23 +43,24 @@ class HumanPlayer(Player):
         return self.name
 
     def move(self):
-        self.move_response = input("Enter 'rock', 'paper' or 'scissors': ")\
-            .lower()
+        self.move_response = input(
+            "Enter 'rock', 'paper' or 'scissors': "
+            ).lower()
         pause()
 
         if self.move_response in moves:
             return self.move_response
         else:
-            self.move()
+            return self.move()
 
 
 # a ReflectPlayer subclass that remembers what move the opponent
 #  player made in the last round and plays that move this round
 class ReflectPlayer(Player):
     def move(self):
-        global count
-        if count == 0:
+        if self.count == 0:
             play = random.choice(moves)
+            self.count += 1
             return play
         else:
             return self.remember
@@ -69,7 +70,11 @@ class ReflectPlayer(Player):
 # last rounds and cycles through the moves
 class CyclePlayer(Player):
     def move(self):
-        play = cycleMoves.pop(cycleMoves.index(random.choice(cycleMoves)))
+        if self.cycle_count > 2:
+            self.cycle_count = 0
+
+        play = moves[self.cycle_count]
+        self.cycle_count += 1
         return play
 
 
@@ -82,13 +87,16 @@ def beats(one, two):
 
 class Game:
     def __init__(self, p1, p2):
+        self.player1_score = 0
+        self.player2_score = 0
         self.p1 = p1
         self.p2 = p2
 
     def rounds_query(self):
         try:
-            self.round_response = int(input("How many rounds would you like \
-                to play?\n"))
+            self.round_response = int(
+                input("How many rounds would you like to play?\n")
+                )
             return self.round_response
         except ValueError:
             self.rounds_query()
@@ -98,7 +106,6 @@ class Game:
         return self.rounds
 
     def play_round(self):
-        global count
         move1 = self.p1.move()
         move2 = self.p2.move()
         name = self.p1.name
@@ -106,12 +113,10 @@ class Game:
         pause()
         self.p1.learn(move1, move2)
         self.p2.learn(move2, move1)
-        count += 1
         self.score(move1, move2)
         pause()
 
     def score(self, my_move, their_move):
-        global player1_score, player2_score
         self.my_move = my_move
         self.their_move = their_move
         self.name = self.p1.learn_name()
@@ -122,13 +127,15 @@ class Game:
         elif beats(self.my_move, self.their_move):
             print(f"{self.name} wins!")
             pause()
-            player1_score += 1
+            self.player1_score += 1
         else:
             print("Phly Killa' wins!")
             pause()
-            player2_score += 1
+            self.player2_score += 1
 
-        print(f"{self.name}: {player1_score}  Phly Killa': {player2_score}\n")
+        print(
+            f"{self.name}: {self.player1_score}  Phly Killa': {self.player2_score}\n"
+            )
         pause()
 
     def win(self, total1, total2):
@@ -149,6 +156,8 @@ class Game:
         name = self.p1.learn_name()
         print(f"\nHello {name}!\n")
         pause()
+        print("Your opponent will be chosen at random.")
+        pause()
         self.rounds_query()
         print("Let's start the Game!\n")
         pause()
@@ -157,7 +166,7 @@ class Game:
             print(f"Round {round}:")
             pause()
             self.play_round()
-        self.win(player1_score, player2_score)
+        self.win(self.player1_score, self.player2_score)
         print("Game over!")
         pause()
 
